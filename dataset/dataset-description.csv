@@ -1,0 +1,109 @@
+Column Name,Description
+RedFighter,Red Fighter Name
+BlueFighter,Blue Fighter Name
+Date,Date of the fight
+Location,Location of the fight
+Country,Country the fight occurs in
+Winner,"The Winner ['Red','Blue','Draw']"
+TitleBout,"Is this a title bout? [TRUE,FALSE]"
+WeightClass,Weight class of fight
+Gender,"Gender of fighters ['MALE','FEMALE]"
+NumberOfRounds,Number of rounds in the fight
+BlueCurrentLoseStreak,Blue's current losing streak
+BlueCurrentWinStreak,Blue's current win streak
+BlueDraws,Blue number of draws
+BlueAvgSigStrLanded,Blue Significant Strikes Landed per Minute
+BlueAvgSigStrPct,Blue Significant Striking Accuracy
+BlueAvgSubAtt,Blue Average Submissions Attempted per 15 Minutes
+BlueAvgTDLanded,Blue Average Takedowns Landed per 15 minutes
+BlueAvgTDPct,Blue Takedown Accuracy
+BlueLongestWinStreak,Blue's longest winning streak
+BlueLosses,Blue total number of losses
+BlueTotalRoundsFought,Blue total rounds fought
+BlueTotalTitleBouts,Blue total number of title bouts
+BlueWinsByDecisionMajority,Blue wins by Majority Decision
+BlueWinsByDecisionSplit,Blue wins by Split Decision
+BlueWinsByDecisionUnanimous,Blue wins by Unanimous Decision
+BlueWinsByKO,Blue wins by KO or TKO
+BlueWinsBySubmission,Blue wins by Submission
+BlueWinsByTKODoctorStoppage,Blue wins by TKO - Doctor's Stoppage
+BlueWins,Blue total wins
+BlueStance,Blue stance
+BlueHeightCms,Blue height in cms
+BlueReachCms,Blue reach in cms
+BlueWeightLbs,Blue weight in lbs
+RedCurrentLoseStreak,Red's current losing streak
+RedCurrentWinStreak,Red's current win streak
+RedDraws,Red number of draws
+RedAvgSigStrLanded,Red Significant Strikes Landed per Minute
+RedAvgSigStrPct,Red Significant Striking Accuracy
+RedAvgSubAtt,Red Average Submissions Attempted per 15 Minutes
+RedAvgTDLanded,Red Average Takedowns Landed per 15 minutes
+RedAvgTDPct,Red Takedown Accuracy
+RedLongestWinStreak,Red's longest winning streak
+RedLosses,Red total number of losses
+RedTotalRoundsFought,Red total rounds fought
+RedTotalTitleBouts,Red total number of title bouts
+RedWinsByDecisionMajority,Red wins by Majority Decision
+RedWinsByDecisionSplit,Red wins by Split Decision
+RedWinsByDecisionUnanimous,Red wins by Unanimous Decision
+RedWinsByKO,Red wins by KO or TKO
+RedWinsBySubmission,Red wins by Submission
+RedWinsByTKODoctorStoppage,Red wins by TKO - Doctor's Stoppage
+RedWins,Red total wins
+RedStance,Red stance
+RedHeightCms,Red height in cms
+RedReachCms,Red reach in cms
+RedWeightLbs,Red weight in lbs
+RedAge,Red age
+BlueAge,Blue age
+LoseStreakDif,(Blue lose streak) - (Red lose streak)
+WinStreakDif,(Blue win streak) - (Red win streak)
+LongestWinStreakDif,(Blue longest win streak) - (Red longest win streak)
+WinDif,(Blue wins) - (Red wins)
+LossDif,(Blue losses) - (Red losses)
+TotalRoundDif,(Blue rounds fought) - (Red rounds fought)
+TotalTitleBoutDif,(Blue number of title fights) - (Red number of title fights)
+KODif,(Blue wins by KO/TKO) - (Red wins by KO/TKO)
+SubDif,(Blue wins by submission) - (Red wins by submission)
+HeightDif,(Blue height) - (Red height) in cms
+ReachDif,(Blue reach) - (Red reach) in cms
+AgeDif,(Blue age) - (Red age)
+SigStrDif,(Blue sig strikes per minute) - (Red sig strikes per minute)
+AvgSubAttDif,(Blue submission attempts) - (Red submission attempts
+AvgTDDif,(Blue TD attempts) - (Red TD attempts)
+EmptyArena,"Did this fight occur in an empty arena? (1,0)"
+BMatchWCRank,Blue's rank in the weightclass this bout takes place in
+RMatchWCRank,Red's rank in the weight class this bout takes place in
+RWFlyweightRank,Red's Women's Flyweight rank
+RWFeatherweightRank,Red's Women's Featherweight Rank
+RWStrawweightRank,Red's Women's Strawweight Rank
+RWBantamweightRank,Red's Women's Bantamweight Rank
+RHeavyweightRank,Red's Heavyweight Rank
+RLightHeavyweightRank,Red's Light Heavyweight Rank
+RMiddleweightRank,Red's Middleweight Rank
+RWelterweightRank,Red's Welterweight Rank
+RLightweightRank,Red's Lightweight Rank
+RFeatherweightRank,Red's Featherweight Rank
+RBantamweightRank,Red's Bantamweight Rank
+RFlyweightRank,Red's Flyweight Rank
+RPFPRank,Red's Pound-for-Pound rank
+BWFlyweightRank,Blue's Women's Flyweight rank
+BWFeatherweightRank,Blue's Women's Featherweight Rank
+BWStrawweightRank,Blue's Women's Strawweight Rank
+BWBantamweightRank,Blue's Women's Bantamweight Rank
+BHeavyweightRank,Blue's Heavyweight Rank
+BLightHeavyweightRank,Blue's Light Heavyweight Rank
+BMiddleweightRank,Blue's Middleweight Rank
+BWelterweightRank,Blue's Welterweight Rank
+BLightweightRank,Blue's Lightweight Rank
+BFeatherweightRank,Blue's Featherweight Rank
+BBantamweightRank,Blue's Bantamweight Rank
+BFlyweightRank,Blue's Flyweight Rank
+BPFPRank,Blue's Pound-for-Pound rank
+BetterRank,"Who has the better rank. [Red,Blue]"
+Finish,How a fight finished
+FinishDetails,Detailed description of finish if available
+FinishRound,round of finish
+FinishRoundTime,time of finish
+TotalFightTimeSecs,total time of fight (in seconds)
