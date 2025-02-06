@@ -6,7 +6,7 @@ df = pd.read_csv("../../dataset/ufc-master.csv")
 # Lista delle colonne da rimuovere
 cols_to_remove = {
     "RedOdds", "BlueOdds", "RedExpectedValue", "BlueExpectedValue",
-    "RedDecOdds", "BlueDecOdds", "RSubOdds", "BSubOdds", "RKOOdds", "BKOOdds" , "EmptyArena"
+    "RedDecOdds", "BlueDecOdds", "RSubOdds", "BSubOdds", "RKOOdds", "BKOOdds"
 }
 
 
