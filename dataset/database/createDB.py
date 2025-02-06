@@ -2,7 +2,7 @@ import duckdb
 import pandas as pd
 
 # Carica il dataset in Pandas
-df = pd.read_csv("../../dataset/finalDataset.csv")
+df = pd.read_csv("../../dataset/ScaledDataset.csv")
 
 # Crea un database DuckDB e una tabella
 con = duckdb.connect("ufc_predictions.db")

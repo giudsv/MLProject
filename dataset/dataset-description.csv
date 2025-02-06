@@ -29,9 +29,9 @@ BlueWinsBySubmission,Blue wins by Submission
 BlueWinsByTKODoctorStoppage,Blue wins by TKO - Doctor's Stoppage
 BlueWins,Blue total wins
 BlueStance,Blue stance
-BlueHeightCms,Blue height in cms
-BlueReachCms,Blue reach in cms
-BlueWeightLbs,Blue weight in lbs
+BlueHeightMt,Blue height in Mt
+BlueReachMt,Blue reach in Mt
+BlueWeightKg,Blue weight in Kg
 RedCurrentLoseStreak,Red's current losing streak
 RedCurrentWinStreak,Red's current win streak
 RedDraws,Red number of draws
@@ -52,9 +52,9 @@ RedWinsBySubmission,Red wins by Submission
 RedWinsByTKODoctorStoppage,Red wins by TKO - Doctor's Stoppage
 RedWins,Red total wins
 RedStance,Red stance
-RedHeightCms,Red height in cms
-RedReachCms,Red reach in cms
-RedWeightLbs,Red weight in lbs
+RedHeightMt,Red height in Mt
+RedReachMt,Red reach in Mt
+RedWeightKg,Red weight in Kg
 RedAge,Red age
 BlueAge,Blue age
 LoseStreakDif,(Blue lose streak) - (Red lose streak)
