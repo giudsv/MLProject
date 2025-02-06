@@ -1,7 +1,7 @@
 Column Name,Description
 RedFighter,Red Fighter Name
 BlueFighter,Blue Fighter Name
-Date,Date of the fight
+Date,Days since the first fight 2010-03-21
 Location,Location of the fight
 Country,Country the fight occurs in
 Winner,"The Winner ['Red','Blue','Draw']"
@@ -103,7 +103,6 @@ BFlyweightRank,Blue's Flyweight Rank
 BPFPRank,Blue's Pound-for-Pound rank
 BetterRank,"Who has the better rank. [Red,Blue]"
 Finish,How a fight finished
-FinishDetails,Detailed description of finish if available
 FinishRound,round of finish
-FinishRoundTime,time of finish
+FinishRoundTimeInSecond,time
 TotalFightTimeMins,total time of fight (in minutes)
