@@ -106,4 +106,4 @@ Finish,How a fight finished
 FinishDetails,Detailed description of finish if available
 FinishRound,round of finish
 FinishRoundTime,time of finish
-TotalFightTimeSecs,total time of fight (in seconds)
+TotalFightTimeMins,total time of fight (in minutes)

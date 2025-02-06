@@ -10,7 +10,8 @@ conversion_map = {
     "RedReachCms": ("RedReachMt", 0.01),  # cm -> m
     "BlueReachCms": ("BlueReachMt", 0.01),  # cm -> m
     "RedWeightLbs": ("RedWeightKg", 0.453592),  # lbs -> kg
-    "BlueWeightLbs": ("BlueWeightKg", 0.453592)  # lbs -> kg
+    "BlueWeightLbs": ("BlueWeightKg", 0.453592),  # lbs -> kg
+    "TotalFightTimeSecs": ("TotalFightTimeMins", 1 / 60)  # sec -> min
 }
 
 # Applicare le conversioni e rinominare le colonne mantenendo l'ordine originale
