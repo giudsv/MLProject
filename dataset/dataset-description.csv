@@ -106,3 +106,6 @@ Finish,How a fight finished
 FinishRound,round of finish
 FinishRoundTimeInSecond,time
 TotalFightTimeMins,total time of fight (in minutes)
+Red_DaysSinceLastFight,
+Blue_DaysSinceLastFight,
+Momentum,

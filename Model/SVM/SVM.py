@@ -1,27 +1,107 @@
 import pandas as pd
-from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import accuracy_score
+import numpy as np
+import time
 import joblib
+from sklearn.svm import SVC
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.metrics import accuracy_score, f1_score
 
-# Carica il dataset
-df = pd.read_csv('../../dataset/finalDataset_encoded.csv')  # Modifica con il percorso corretto del tuo file
 
-# Pre-elaborazione dei dati
-X = df.drop('Winner_Red', axis=1)  # Colonne indipendenti
-y = df['Winner_Red']  # Variabile target (Winner_Red)
+# Funzione per allenare il modello
+def train_model():
+    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')
+    df = df.sort_values(by="DaysSinceFirstFight")
+    X = df.drop('Winner_Red', axis=1)
+    y = df['Winner_Red']
 
-# Creazione del modello SVM con kernel RBF (Radial Basis Function)
-svm_model = SVC(kernel='rbf', random_state=42)
+    svm_model = SVC(kernel='rbf', random_state=42)
+    start_time = time.time()
 
-# Applicazione della 5-fold cross-validation
-cv_scores = cross_val_score(svm_model, X, y, cv=5, scoring='accuracy')
+    method = input("Scegli il metodo di training (1 per TimeSeriesSplit, 2 per 80-20 split): ")
 
-# Stampa dell'accuratezza media delle 5 fold
-print(f"Accuracy media con 5-fold Cross Validation: {cv_scores.mean():.2f}")
+    if method == "1":
+        print("\n▶ Training con TimeSeriesSplit...")
+        tscv = TimeSeriesSplit(n_splits=5)
+        accuracy_scores, f1_scores = [], []
 
-# Opzionale: Salvare il modello addestrato (su tutto il dataset)
-svm_model.fit(X, y)  # Alleniamo il modello con l'intero dataset
-joblib.dump(svm_model, 'svm_model.pkl')
+        for train_index, test_index in tscv.split(X):
+            X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+            y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
-print("Modello SVM salvato come 'svm_model.pkl'")
+            svm_model.fit(X_train, y_train)
+            y_pred = svm_model.predict(X_test)
+
+            accuracy_scores.append(accuracy_score(y_test, y_pred))
+            f1_scores.append(f1_score(y_test, y_pred))
+
+        mean_accuracy = np.mean(accuracy_scores)
+        mean_f1_score = np.mean(f1_scores)
+        print(f"✅ Mean Accuracy (TimeSeriesSplit CV): {mean_accuracy:.4f}")
+        print(f"✅ Mean F1-score (TimeSeriesSplit CV): {mean_f1_score:.4f}")
+        model_filename = 'svm_K_CROSS.pkl'
+
+    elif method == "2":
+        print("\n▶ Training con 80-20 split...")
+        split_idx = int(len(df) * 0.8)
+        X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+        y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
+
+        svm_model.fit(X_train, y_train)
+        y_pred = svm_model.predict(X_test)
+
+        accuracy = accuracy_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred)
+        print(f"✅ Accuracy: {accuracy:.4f}")
+        print(f"✅ F1-score: {f1:.4f}")
+        model_filename = 'svm_SPLIT.pkl'
+    else:
+        print("❌ Scelta non valida.")
+        return
+
+    execution_time = time.time() - start_time
+    print(f"⏳ Tempo di esecuzione: {execution_time:.2f} secondi")
+    joblib.dump(svm_model, model_filename)
+    print(f"💾 Modello salvato come {model_filename}")
+
+
+# Funzione per fare previsioni
+def predict_model():
+    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')
+    df = df.sort_values(by="DaysSinceFirstFight")
+    X = df.drop('Winner_Red', axis=1)
+    y = df['Winner_Red']
+
+    model_choice = input("Scegli il modello da caricare (1 per K-CROSS, 2 per SPLIT): ")
+
+    if model_choice == "1":
+        model_filename = 'svm_K_CROSS.pkl'
+    elif model_choice == "2":
+        model_filename = 'svm_SPLIT.pkl'
+    else:
+        print("❌ Scelta non valida.")
+        return
+
+    svm_model = joblib.load(model_filename)
+    print(f"✅ Modello {model_filename} caricato con successo!")
+
+    start_time = time.time()
+    y_pred = svm_model.predict(X)
+    execution_time = time.time() - start_time
+
+    accuracy = accuracy_score(y, y_pred)
+    f1 = f1_score(y, y_pred)
+
+    print(f"\n🎯 Accuracy: {accuracy:.4f}")
+    print(f"🎯 F1-score: {f1:.4f}")
+    print(f"⏳ Tempo di predizione: {execution_time:.4f} secondi")
+
+
+# Menu principale
+if __name__ == "__main__":
+    mode = input("Scegli modalità: train (1) o predict (2): ")
+    if mode == "1":
+        train_model()
+    elif mode == "2":
+        predict_model()
+    else:
+        print("❌ Scelta non valida.")
