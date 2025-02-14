@@ -1,11 +1,12 @@
 import pandas as pd
 import numpy as np
+import os as os
 import time
 import joblib
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, ConfusionMatrixDisplay
 
 # Caricare il dataset per il mapping dei fighter
 df_fighters = pd.read_csv("../../dataset/finalDataset_encoded.csv")
@@ -49,6 +50,9 @@ def train_model():
         print(f"✅ Mean F1-score (TimeSeriesSplit CV): {mean_f1_score:.4f}")
         model_filename = 'random_forest_K_CROSS.pkl'
 
+
+
+
     elif method == "2":
         print("\n▶ Training con 80-20 split...")
         split_idx = int(len(df) * 0.8)
@@ -71,9 +75,24 @@ def train_model():
         print("❌ Scelta non valida.")
         return
 
+
     print(f"⏳ Tempo di esecuzione (solo training): {execution_time:.2f} secondi")
     joblib.dump(rf_classifier, model_filename)
     print(f"💾 Modello salvato come {model_filename}")
+
+    # Calcola la matrice di confusione
+    cm = confusion_matrix(y_test, y_pred)
+
+    # Visualizza la matrice di confusione
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Blue", "Red"])
+    disp.plot(cmap=plt.cm.Blues)
+
+    # Salva la matrice di confusione nella cartella dello script
+    save_path = os.path.join(os.getcwd(), "confusion_matrix_rf.png")
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.close()  # Chiude la figura per evitare problemi di memoria
+
+    print(f"✅ Matrice di confusione salvata in: {save_path}")
 
 # Funzione per fare una predizione
 def predict_model():
