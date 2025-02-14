@@ -84,4 +84,4 @@ for index, row in df.iterrows():
 # Salviamo il dataset con la nuova feature
 df.to_csv('../../dataset/finalDataset.csv', index=False)
 
-print("✅ Momentum calcolato correttamente con il filtro")
+

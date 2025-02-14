@@ -14,6 +14,13 @@ all_fighters = pd.concat([df['RedFighter'], df['BlueFighter']], axis=0).unique()
 # Fit del LabelEncoder su tutti i nomi degli atleti
 label_encoder.fit(all_fighters)
 
+# Creare un DataFrame con il mapping atleta -> label
+fighters_mapping = pd.DataFrame({'Fighter': all_fighters, 'Label': label_encoder.transform(all_fighters)})
+
+# Salvare il mapping in un file CSV
+fighters_mapping.to_csv("../../dataset/fighters_labels.csv", index=False)
+
+
 # Applicare lo stesso encoding a entrambe le colonne
 df['RedFighter'] = label_encoder.transform(df['RedFighter'])
 df['BlueFighter'] = label_encoder.transform(df['BlueFighter'])
@@ -34,5 +41,4 @@ output_path = "../../dataset/finalDataset_encoded.csv"
 # Salvare il dataset trasformato in un nuovo file CSV
 df_encoded.to_csv(output_path, index=False)
 
-print("Label Encoding per gli atleti (con stesso mapping per Red e Blue), Location e Country completato.")
-print("One-Hot Encoding per le altre colonne completato. File salvato come finalDataset_encoded.csv.")
+

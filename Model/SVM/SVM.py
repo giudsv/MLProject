@@ -6,23 +6,28 @@ from sklearn.svm import SVC
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import accuracy_score, f1_score
 
+# Caricare il dataset per il mapping dei fighter
+df_fighters = pd.read_csv("../../dataset/finalDataset_encoded.csv")
+print(df_fighters['Winner_Red'].value_counts())
 
-# Funzione per allenare il modello
+fighters_mapping = pd.read_csv("../../dataset/fighters_labels.csv")
+fighters_dict = dict(zip(fighters_mapping["Fighter"].str.lower().str.strip(), fighters_mapping["Label"]))
+
+
 def train_model():
-    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')
-    df = df.sort_values(by="DaysSinceFirstFight")
+    df = df_fighters.sort_values(by="DaysSinceFirstFight")
     X = df.drop('Winner_Red', axis=1)
     y = df['Winner_Red']
 
-    svm_model = SVC(kernel='rbf', random_state=42)
-    start_time = time.time()
-
+    svm_model = SVC(kernel='rbf', probability=True, random_state=42)
     method = input("Scegli il metodo di training (1 per TimeSeriesSplit, 2 per 80-20 split): ")
 
     if method == "1":
         print("\n▶ Training con TimeSeriesSplit...")
         tscv = TimeSeriesSplit(n_splits=5)
         accuracy_scores, f1_scores = [], []
+
+        start_time = time.time()
 
         for train_index, test_index in tscv.split(X):
             X_train, X_test = X.iloc[train_index], X.iloc[test_index]
@@ -34,6 +39,7 @@ def train_model():
             accuracy_scores.append(accuracy_score(y_test, y_pred))
             f1_scores.append(f1_score(y_test, y_pred))
 
+        execution_time = time.time() - start_time
         mean_accuracy = np.mean(accuracy_scores)
         mean_f1_score = np.mean(f1_scores)
         print(f"✅ Mean Accuracy (TimeSeriesSplit CV): {mean_accuracy:.4f}")
@@ -46,9 +52,12 @@ def train_model():
         X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
         y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
+        start_time = time.time()
+
         svm_model.fit(X_train, y_train)
         y_pred = svm_model.predict(X_test)
 
+        execution_time = time.time() - start_time
         accuracy = accuracy_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred)
         print(f"✅ Accuracy: {accuracy:.4f}")
@@ -58,18 +67,14 @@ def train_model():
         print("❌ Scelta non valida.")
         return
 
-    execution_time = time.time() - start_time
-    print(f"⏳ Tempo di esecuzione: {execution_time:.2f} secondi")
+    print(f"⏳ Tempo di esecuzione (solo training): {execution_time:.2f} secondi")
     joblib.dump(svm_model, model_filename)
     print(f"💾 Modello salvato come {model_filename}")
 
 
-# Funzione per fare previsioni
 def predict_model():
-    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')
-    df = df.sort_values(by="DaysSinceFirstFight")
+    df = df_fighters.sort_values(by="DaysSinceFirstFight")
     X = df.drop('Winner_Red', axis=1)
-    y = df['Winner_Red']
 
     model_choice = input("Scegli il modello da caricare (1 per K-CROSS, 2 per SPLIT): ")
 
@@ -84,19 +89,50 @@ def predict_model():
     svm_model = joblib.load(model_filename)
     print(f"✅ Modello {model_filename} caricato con successo!")
 
+    red_fighter = input("Inserisci il nome del Red Fighter: ").strip().lower()
+    blue_fighter = input("Inserisci il nome del Blue Fighter: ").strip().lower()
+
+    if red_fighter not in fighters_dict or blue_fighter not in fighters_dict:
+        print("❌ Uno dei nomi inseriti non è presente nel database. Riprova.")
+        return
+
+    red_fighter_id = fighters_dict[red_fighter]
+    blue_fighter_id = fighters_dict[blue_fighter]
+
+    red_fighter_stats = df[(df['RedFighter'] == red_fighter_id) | (df['BlueFighter'] == red_fighter_id)]
+    blue_fighter_stats = df[(df['RedFighter'] == blue_fighter_id) | (df['BlueFighter'] == blue_fighter_id)]
+
+    if red_fighter_stats.empty or blue_fighter_stats.empty:
+        print("❌ Errore: uno dei fighter non è presente nel dataset.")
+        return
+
+    fight_data = pd.DataFrame(columns=X.columns)
+
+    for col in red_fighter_stats.columns:
+        if col in fight_data.columns:
+            fight_data.at[0, col] = red_fighter_stats[col].values[0]
+
+    for col in blue_fighter_stats.columns:
+        if col in fight_data.columns:
+            fight_data.at[0, col] = blue_fighter_stats[col].values[0]
+
+    expected_features = svm_model.feature_names_in_
+    fight_data = fight_data.reindex(columns=expected_features, fill_value=0)
+
     start_time = time.time()
-    y_pred = svm_model.predict(X)
+    prediction = svm_model.predict(fight_data)[0]
+    prediction_proba = svm_model.predict_proba(fight_data)
     execution_time = time.time() - start_time
 
-    accuracy = accuracy_score(y, y_pred)
-    f1 = f1_score(y, y_pred)
+    winner = red_fighter if prediction == 1 else blue_fighter
+    print(f"\n🥊 Il modello prevede che il vincitore sarà: **{winner}** 🏆")
+    print(f"⏳ Tempo di esecuzione (solo predizione): {execution_time:.2f} secondi")
+    print(f"Prediction probabilities: {prediction_proba}")
+    print(f"Raw prediction: {prediction}")
+    print("\n📊 Feature values used for prediction:")
+    print(fight_data.iloc[0])
 
-    print(f"\n🎯 Accuracy: {accuracy:.4f}")
-    print(f"🎯 F1-score: {f1:.4f}")
-    print(f"⏳ Tempo di predizione: {execution_time:.4f} secondi")
 
-
-# Menu principale
 if __name__ == "__main__":
     mode = input("Scegli modalità: train (1) o predict (2): ")
     if mode == "1":

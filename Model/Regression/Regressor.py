@@ -6,11 +6,15 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, f1_score
 
+# Caricare il dataset per il mapping dei fighter
+df_fighters = pd.read_csv("../../dataset/finalDataset_encoded.csv")
+fighters_mapping = pd.read_csv("../../dataset/fighters_labels.csv")
+fighters_dict = dict(zip(fighters_mapping["Fighter"].str.lower().str.strip(), fighters_mapping["Label"]))
+
 
 # Funzione per allenare il modello
 def train_model():
-    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')  # Sostituisci con il tuo file CSV
-    df = df.sort_values(by="DaysSinceFirstFight")
+    df = df_fighters.sort_values(by="DaysSinceFirstFight")
     X = df.drop('Winner_Red', axis=1)
     y = df['Winner_Red']
 
@@ -68,10 +72,8 @@ def train_model():
 
 # Funzione per fare previsioni
 def predict_model():
-    df = pd.read_csv('../../dataset/finalDataset_encoded.csv')
-    df = df.sort_values(by="DaysSinceFirstFight")
+    df = df_fighters.sort_values(by="DaysSinceFirstFight")
     X = df.drop('Winner_Red', axis=1)
-    y = df['Winner_Red']
 
     model_choice = input("Scegli il modello da caricare (1 per K-CROSS, 2 per SPLIT): ")
 
@@ -86,18 +88,43 @@ def predict_model():
     lr_model = joblib.load(model_filename)
     print(f"✅ Modello {model_filename} caricato con successo!")
 
+    red_fighter = input("Inserisci il nome del Red Fighter: ").strip().lower()
+    blue_fighter = input("Inserisci il nome del Blue Fighter: ").strip().lower()
+
+    if red_fighter not in fighters_dict or blue_fighter not in fighters_dict:
+        print("❌ Uno dei nomi inseriti non è presente nel database. Riprova.")
+        return
+
+    red_fighter_id = fighters_dict[red_fighter]
+    blue_fighter_id = fighters_dict[blue_fighter]
+
+    red_fighter_stats = df[(df['RedFighter'] == red_fighter_id) | (df['BlueFighter'] == red_fighter_id)]
+    blue_fighter_stats = df[(df['RedFighter'] == blue_fighter_id) | (df['BlueFighter'] == blue_fighter_id)]
+
+    if red_fighter_stats.empty or blue_fighter_stats.empty:
+        print("❌ Errore: uno dei fighter non è presente nel dataset.")
+        return
+
+    fight_data = pd.DataFrame(columns=X.columns)
+
+    for col in red_fighter_stats.columns:
+        if col in fight_data.columns:
+            fight_data.at[0, col] = red_fighter_stats[col].values[0]
+
+    for col in blue_fighter_stats.columns:
+        if col in fight_data.columns:
+            fight_data.at[0, col] = blue_fighter_stats[col].values[0]
+
+    expected_features = lr_model.feature_names_in_
+    fight_data = fight_data.reindex(columns=expected_features, fill_value=0)
+
     start_time = time.time()
-    y_pred = lr_model.predict(X)
+    prediction = lr_model.predict(fight_data)[0]
     execution_time = time.time() - start_time
 
-    y_pred_binary = (y_pred >= 0.5).astype(int)
-
-    accuracy = accuracy_score(y, y_pred_binary)
-    f1 = f1_score(y, y_pred_binary)
-
-    print(f"\n🎯 Accuracy: {accuracy:.4f}")
-    print(f"🎯 F1-score: {f1:.4f}")
-    print(f"⏳ Tempo di predizione: {execution_time:.4f} secondi")
+    winner = red_fighter if prediction >= 0.5 else blue_fighter
+    print(f"\n🥊 Il modello prevede che il vincitore sarà: **{winner}** 🏆")
+    print(f"⏳ Tempo di esecuzione (solo predizione): {execution_time:.2f} secondi")
 
 
 # Menu principale
